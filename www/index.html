@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Minesweeper</title>
+    <style>
+
+      body {
+        background: #333;
+        margin: 0;
+        padding: 10px;
+        text-align: center;
+        min-width: 510px;
+      }
+
+      #board {
+        border: 2px solid #808080;
+        display: inline-block;
+        font-size: 0;
+        zoom: 1;
+      }
+
+      .cell {
+        background: #ccc url("./minesweeper.gif") 0 0 no-repeat;
+        background-size: 128px 96px;
+        box-sizing: border-box;
+        display: inline-block;
+        font-size: 24px;
+        height: 0;
+        position: relative;
+        text-align: center;
+        padding: 16px;
+        width: 0;
+      }
+
+      .cell.flag   { background-position: left -32px top 0; }
+      .cell.mine   { background-position: left -64px top 0; }
+      .cell.cell-0 { background-position: left -96px top 0; }
+      .cell.cell-1 { background-position: left 0     top -32px; }
+      .cell.cell-2 { background-position: left -32px top -32px; }
+      .cell.cell-3 { background-position: left -64px top -32px; }
+      .cell.cell-4 { background-position: left -96px top -32px; }
+      .cell.cell-5 { background-position: left 0     top -64px; }
+      .cell.cell-6 { background-position: left -32px top -64px; }
+      .cell.cell-7 { background-position: left -64px top -64px; }
+      .cell.cell-8 { background-position: left -96px top -64px; }
+
+      .zoom {
+        background: #222;
+        bottom: 0;
+        position: fixed;
+        padding: 10px;
+        left: 0;
+        right: 0;
+      }
+
+      .zoom button {
+        background: #ccc;
+        font-family: monospace;
+        font-size: 16px;
+        font-weight: bold;
+        border: 4px outset #fff;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div id="board"></div>
+      <div class="zoom">
+        <button id="zoom-in">-</button>
+        <button id="zoom-out">+</button>
+      </div>
+    </div>
+    <script type="text/javascript" src="./js/bundle.js"></script>
+  </body>
+</html>

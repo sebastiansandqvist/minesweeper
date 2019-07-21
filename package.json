@@ -1,0 +1,27 @@
+{
+  "name": "minesweeper",
+  "version": "1.0.0",
+  "main": "rollup.config.js",
+  "scripts": {
+    "dev": "rollup -c --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sebastiansandqvist/minesweeper.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sebastiansandqvist/minesweeper/issues"
+  },
+  "homepage": "https://github.com/sebastiansandqvist/minesweeper#readme",
+  "devDependencies": {
+    "rollup": "1.17.0",
+    "rollup-plugin-commonjs": "10.0.1",
+    "rollup-plugin-filesize": "6.1.1",
+    "rollup-plugin-node-resolve": "5.2.0",
+    "rollup-plugin-typescript2": "0.22.0",
+    "typescript": "3.5.3"
+  }
+}
