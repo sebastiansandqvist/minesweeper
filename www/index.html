@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Minesweeper</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
 
       body {
@@ -10,7 +11,6 @@
         margin: 0;
         padding: 10px;
         text-align: center;
-        min-width: 510px;
       }
 
       #board {
@@ -45,7 +45,7 @@
       .cell.cell-7 { background-position: left -64px top -64px; }
       .cell.cell-8 { background-position: left -96px top -64px; }
 
-      .zoom {
+      .actions {
         background: #222;
         bottom: 0;
         position: fixed;
@@ -54,7 +54,7 @@
         right: 0;
       }
 
-      .zoom button {
+      .actions button {
         background: #ccc;
         font-family: monospace;
         font-size: 16px;
@@ -67,9 +67,10 @@
   <body>
     <div id="app">
       <div id="board"></div>
-      <div class="zoom">
+      <div class="actions">
         <button id="zoom-in">-</button>
         <button id="zoom-out">+</button>
+        <button id="new-game">new game</button>
       </div>
     </div>
     <script type="text/javascript" src="./js/bundle.js"></script>

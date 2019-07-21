@@ -169,7 +169,8 @@
   var board = document.getElementById('board');
   var zoomIn = document.getElementById('zoom-in');
   var zoomOut = document.getElementById('zoom-out');
-  if (board && zoomIn && zoomOut) {
+  var newGameButton = document.getElementById('new-game');
+  if (board && zoomIn && zoomOut && newGameButton) {
       board.style.zoom = zoomLevel.toString();
       zoomIn.onclick = function () {
           if (!isNewGame && !isGameOver) {
@@ -192,6 +193,13 @@
           board.style.zoom = zoomLevel.toString();
           newGame(zoomLevel);
           localStorage.setItem('zoom', zoomLevel.toString());
+      };
+      newGameButton.onclick = function () {
+          if (!isNewGame && !isGameOver) {
+              if (!confirm('This will end the current game. Continue?'))
+                  return;
+          }
+          newGame(zoomLevel);
       };
   }
   newGame(zoomLevel);

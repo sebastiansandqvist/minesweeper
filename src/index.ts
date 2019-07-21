@@ -199,8 +199,9 @@ let zoomLevel = parseFloat(localStorage.getItem('zoom') || '1');
 const board = document.getElementById('board');
 const zoomIn = document.getElementById('zoom-in');
 const zoomOut = document.getElementById('zoom-out');
+const newGameButton = document.getElementById('new-game');
 
-if (board && zoomIn && zoomOut) {
+if (board && zoomIn && zoomOut && newGameButton) {
   board.style.zoom = zoomLevel.toString();
   zoomIn.onclick = () => {
     if (!isNewGame && !isGameOver) {
@@ -220,6 +221,12 @@ if (board && zoomIn && zoomOut) {
     board.style.zoom = zoomLevel.toString();
     newGame(zoomLevel);
     localStorage.setItem('zoom', zoomLevel.toString());
+  };
+  newGameButton.onclick = () => {
+    if (!isNewGame && !isGameOver) {
+      if (!confirm('This will end the current game. Continue?')) return;
+    }
+    newGame(zoomLevel);
   };
 }
 
