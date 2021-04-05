@@ -8,6 +8,8 @@
 
       body {
         background: #333;
+        font-family: monospace;
+        font-size: 16px;
         margin: 0;
         padding: 10px;
         text-align: center;
@@ -17,6 +19,7 @@
         border: 2px solid #808080;
         display: inline-block;
         font-size: 0;
+        white-space: nowrap;
         zoom: 1;
       }
 
@@ -56,10 +59,36 @@
 
       .actions button {
         background: #ccc;
+        border: 4px outset #fff;
         font-family: monospace;
         font-size: 16px;
         font-weight: bold;
-        border: 4px outset #fff;
+      }
+
+      .actions button:focus {
+        background: #59f;
+        border: 4px outset #59f;
+        outline: 0;
+      }
+
+      .actions input {
+        background: #000;
+        border: 4px inset #777;
+        color: white;
+        font-family: monospace;
+        font-size: 16px;
+        font-weight: bold;
+        width: 20px; /* fallback when ch unit is not supported */
+        width: 2ch;
+      }
+
+      .actions input:focus {
+        border: 4px inset #59f;
+        outline: 0;
+      }
+
+      .text-muted {
+        color: #999;
       }
 
     </style>
@@ -68,9 +97,13 @@
     <div id="app">
       <div id="board"></div>
       <div class="actions">
-        <button id="zoom-in">-</button>
+        <span class="text-muted">Board size: </span>
+        <input type="text" id="set-rows" maxlength="2">
+        <span class="text-muted"> x </span>
+        <input type="text" id="set-cols" maxlength="2">
+<!--         <button id="zoom-in">-</button>
         <button id="zoom-out">+</button>
-        <button id="new-game">new game</button>
+ -->        <button id="new-game">new game</button>
       </div>
     </div>
     <script type="text/javascript" src="./js/bundle.js"></script>

@@ -19,7 +19,7 @@ interface Board {
   rows: number;
   cols: number;
   mineCount: number;
-  cells: Cell[]; // a flattened 2d array
+  cells: Cell[]; /** a flattened 2d array */
 }
 
 
@@ -29,7 +29,7 @@ function placeMines(board: Board) {
   }
 }
 
-// fisher-yates shuffle
+/** fisher-yates shuffle */
 function shuffle<T>(arr: T[]) {
   let n = arr.length;
   let temp;
@@ -42,14 +42,14 @@ function shuffle<T>(arr: T[]) {
   return arr;
 }
 
-// given 2d coordinates, get the 1d equivalent
+/** given 2d coordinates, get the 1d equivalent */
 function getIndex(board: Board, row: number, col: number) {
   return (board.cols * row) + col;
 }
 
 type Coords = [number, number];
 
-// given 1d coordinate (index), get 2d row/col
+/** given 1d coordinate (index), get 2d row/col */
 function getCoords(board: Board, index: number): Coords {
   const row = Math.trunc(index / board.cols);
   const col = index % board.cols;
@@ -80,8 +80,10 @@ function isInBounds(row: number, col: number, board: Board) {
   return true;
 }
 
-// get 1d locations of every cell touching the cell at `index`,
-// filtering out neighbors out of bounds
+/**
+  get 1d locations of every cell touching the cell at `index`,
+  filtering out neighbors out of bounds
+*/
 function getNeighbors(board: Board, index: number) {
   const [row, col] = getCoords(board, index);
   const neighbors: Coords[] = [
@@ -129,21 +131,23 @@ function makeCellElement() {
   return el;
 }
 
+function setZoomLevel() {
+  const hZoom = (window.innerWidth / (board.clientWidth + H_MARGIN));
+  const vZoom = (window.innerHeight / (board.clientHeight + V_MARGIN));
+  board.style.zoom = Math.min(hZoom, vZoom).toString();
+}
+
 let isNewGame = true;
 let isGameOver = false;
 
 const V_MARGIN = 70;
 const H_MARGIN = 40;
 const MINE_PROPORTION = 0.15;
-const CELL_DEFAULT_SIZE = 32;
 
-function newGame(zoom: number) {
+function newGame(rows: number, cols: number) {
   isNewGame = true;
   isGameOver = false;
-  const cellSize = Math.round(CELL_DEFAULT_SIZE * zoom);
 
-  const rows = Math.floor((window.innerHeight - V_MARGIN) / cellSize);
-  const cols = Math.floor((window.innerWidth - H_MARGIN) / cellSize);
   const mines = Math.round(rows * cols * MINE_PROPORTION);
   const board = makeBoard(rows, cols, mines);
 
@@ -156,7 +160,7 @@ function newGame(zoom: number) {
   elements.forEach((el, i) => {
     const handleClick = (index: number) => {
       const cell = board.cells[index];
-      if (isGameOver) return newGame(zoom);
+      if (isGameOver) return newGame(rows, cols);
       isNewGame = false;
       if (cell.isOpen) return; // do nothing since cell was already clicked
       if (cell.hasMine) {
@@ -200,55 +204,55 @@ function newGame(zoom: number) {
     const [row, col] = getCoords(board, i);
     if (col === cols - 1) parent.appendChild(document.createElement('br'));
   }
+
+  setZoomLevel();
 }
 
 
 const board = document.getElementById('board') as HTMLDivElement;
-const zoomIn = document.getElementById('zoom-in') as HTMLButtonElement;
-const zoomOut = document.getElementById('zoom-out') as HTMLButtonElement;
+const setRows = document.getElementById('set-rows') as HTMLButtonElement;
+const setCols = document.getElementById('set-cols') as HTMLButtonElement;
 const newGameButton = document.getElementById('new-game') as HTMLButtonElement;
 
-const MAX_ZOOM = 4; // NOTE: arbitrary number -- might switch to requiring at least n cols instead
-const MIN_ZOOM = 0.25;
-const ZOOM_AMOUNT = 0.25;
-
-let zoomLevel = parseFloat(localStorage.getItem('zoom') || '1');
-
-const zoomUpdated = () => {
-  zoomIn.disabled = zoomLevel > MAX_ZOOM;
-  zoomOut.disabled = zoomLevel <= MIN_ZOOM;
-  board.style.zoom = zoomLevel.toString();
-}
-
-zoomUpdated();
-
-zoomIn.onclick = () => {
-  if (!isNewGame && !isGameOver) {
-    if (!confirm('Changing zoom will reset the current game. Continue?')) return;
-  }
-  zoomLevel += ZOOM_AMOUNT;
-  zoomUpdated();
-  newGame(zoomLevel);
-  localStorage.setItem('zoom', zoomLevel.toString());
+const CELL_DEFAULT_SIZE = 32;
+const size = {
+  rows: Math.floor((window.innerHeight - V_MARGIN) / CELL_DEFAULT_SIZE),
+  cols: Math.floor((window.innerWidth - H_MARGIN) / CELL_DEFAULT_SIZE)
 };
 
-zoomOut.onclick = () => {
-  if (!isNewGame && !isGameOver) {
-    if (!confirm('Changing zoom will reset the current game. Continue?')) return;
-  }
-  zoomLevel -= ZOOM_AMOUNT;
-  zoomUpdated();
-  newGame(zoomLevel);
-  localStorage.setItem('zoom', zoomLevel.toString());
-};
 
 newGameButton.onclick = () => {
   if (!isNewGame && !isGameOver) {
     if (!confirm('This will end the current game. Continue?')) return;
   }
-  newGame(zoomLevel);
+  newGame(size.rows, size.cols);
+};
+
+/** set rows to be used for the *next* new game via input: */
+setRows.oninput = () => {
+  const n = parseInt(setRows.value, 10);
+  if (n > 0) {
+    size.rows = n;
+  }
+};
+
+/** set cols to be used for the *next* new game via input: */
+setCols.oninput = () => {
+  const n = parseInt(setCols.value, 10);
+  if (n > 0) {
+    size.cols = n;
+  }
 };
 
 
-newGame(zoomLevel);
+window.addEventListener('resize', () => {
+  setZoomLevel();
+});
+
+/** at startup, set row/col inputs' values and initialize a new game: */
+(function init() {
+  setRows.value = size.rows.toString();
+  setCols.value = size.cols.toString();
+  newGame(size.rows, size.cols);
+})();
 

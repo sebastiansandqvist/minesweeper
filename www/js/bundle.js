@@ -14,7 +14,7 @@
           board.cells[i].hasMine = true;
       }
   }
-  // fisher-yates shuffle
+  /** fisher-yates shuffle */
   function shuffle(arr) {
       var n = arr.length;
       var temp;
@@ -26,11 +26,11 @@
       }
       return arr;
   }
-  // given 2d coordinates, get the 1d equivalent
+  /** given 2d coordinates, get the 1d equivalent */
   function getIndex(board, row, col) {
       return (board.cols * row) + col;
   }
-  // given 1d coordinate (index), get 2d row/col
+  /** given 1d coordinate (index), get 2d row/col */
   function getCoords(board, index) {
       var row = Math.trunc(index / board.cols);
       var col = index % board.cols;
@@ -59,8 +59,10 @@
           return false;
       return true;
   }
-  // get 1d locations of every cell touching the cell at `index`,
-  // filtering out neighbors out of bounds
+  /**
+    get 1d locations of every cell touching the cell at `index`,
+    filtering out neighbors out of bounds
+  */
   function getNeighbors(board, index) {
       var _a = getCoords(board, index), row = _a[0], col = _a[1];
       var neighbors = [
@@ -111,18 +113,19 @@
       el.className = 'cell';
       return el;
   }
+  function setZoomLevel() {
+      var hZoom = (window.innerWidth / (board.clientWidth + H_MARGIN));
+      var vZoom = (window.innerHeight / (board.clientHeight + V_MARGIN));
+      board.style.zoom = Math.min(hZoom, vZoom).toString();
+  }
   var isNewGame = true;
   var isGameOver = false;
   var V_MARGIN = 70;
   var H_MARGIN = 40;
   var MINE_PROPORTION = 0.15;
-  var CELL_DEFAULT_SIZE = 32;
-  function newGame(zoom) {
+  function newGame(rows, cols) {
       isNewGame = true;
       isGameOver = false;
-      var cellSize = Math.round(CELL_DEFAULT_SIZE * zoom);
-      var rows = Math.floor((window.innerHeight - V_MARGIN) / cellSize);
-      var cols = Math.floor((window.innerWidth - H_MARGIN) / cellSize);
       var mines = Math.round(rows * cols * MINE_PROPORTION);
       var board = makeBoard(rows, cols, mines);
       // clear the board element's contents on each new game
@@ -136,7 +139,7 @@
           var handleClick = function (index) {
               var cell = board.cells[index];
               if (isGameOver)
-                  return newGame(zoom);
+                  return newGame(rows, cols);
               isNewGame = false;
               if (cell.isOpen)
                   return; // do nothing since cell was already clicked
@@ -185,48 +188,46 @@
           if (col === cols - 1)
               parent.appendChild(document.createElement('br'));
       }
+      setZoomLevel();
   }
   var board = document.getElementById('board');
-  var zoomIn = document.getElementById('zoom-in');
-  var zoomOut = document.getElementById('zoom-out');
+  var setRows = document.getElementById('set-rows');
+  var setCols = document.getElementById('set-cols');
   var newGameButton = document.getElementById('new-game');
-  var MAX_ZOOM = 4; // NOTE: arbitrary number -- might switch to requiring at least n cols instead
-  var MIN_ZOOM = 0.25;
-  var ZOOM_AMOUNT = 0.25;
-  var zoomLevel = parseFloat(localStorage.getItem('zoom') || '1');
-  var zoomUpdated = function () {
-      zoomIn.disabled = zoomLevel > MAX_ZOOM;
-      zoomOut.disabled = zoomLevel <= MIN_ZOOM;
-      board.style.zoom = zoomLevel.toString();
-  };
-  zoomUpdated();
-  zoomIn.onclick = function () {
-      if (!isNewGame && !isGameOver) {
-          if (!confirm('Changing zoom will reset the current game. Continue?'))
-              return;
-      }
-      zoomLevel += ZOOM_AMOUNT;
-      zoomUpdated();
-      newGame(zoomLevel);
-      localStorage.setItem('zoom', zoomLevel.toString());
-  };
-  zoomOut.onclick = function () {
-      if (!isNewGame && !isGameOver) {
-          if (!confirm('Changing zoom will reset the current game. Continue?'))
-              return;
-      }
-      zoomLevel -= ZOOM_AMOUNT;
-      zoomUpdated();
-      newGame(zoomLevel);
-      localStorage.setItem('zoom', zoomLevel.toString());
+  var CELL_DEFAULT_SIZE = 32;
+  var size = {
+      rows: Math.floor((window.innerHeight - V_MARGIN) / CELL_DEFAULT_SIZE),
+      cols: Math.floor((window.innerWidth - H_MARGIN) / CELL_DEFAULT_SIZE)
   };
   newGameButton.onclick = function () {
       if (!isNewGame && !isGameOver) {
           if (!confirm('This will end the current game. Continue?'))
               return;
       }
-      newGame(zoomLevel);
+      newGame(size.rows, size.cols);
   };
-  newGame(zoomLevel);
+  /** set rows to be used for the *next* new game via input: */
+  setRows.oninput = function () {
+      var n = parseInt(setRows.value, 10);
+      if (n > 0) {
+          size.rows = n;
+      }
+  };
+  /** set cols to be used for the *next* new game via input: */
+  setCols.oninput = function () {
+      var n = parseInt(setCols.value, 10);
+      if (n > 0) {
+          size.cols = n;
+      }
+  };
+  window.addEventListener('resize', function () {
+      setZoomLevel();
+  });
+  /** at startup, set row/col inputs' values and initialize a new game: */
+  (function init() {
+      setRows.value = size.rows.toString();
+      setCols.value = size.cols.toString();
+      newGame(size.rows, size.cols);
+  })();
 
 }());
