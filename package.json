@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/sebastiansandqvist/minesweeper#readme",
   "devDependencies": {
-    "rollup": "1.17.0",
+    "rollup": "3.29.5",
     "rollup-plugin-commonjs": "10.0.1",
     "rollup-plugin-filesize": "6.1.1",
     "rollup-plugin-node-resolve": "5.2.0",
